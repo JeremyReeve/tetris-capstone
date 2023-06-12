@@ -1,0 +1,7 @@
+geopandas
+matplotlib
+pandas
+plotly
+time
+numpy
+Image
