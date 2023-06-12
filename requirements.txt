@@ -2,6 +2,6 @@ geopandas
 matplotlib
 pandas
 plotly
-time
+python-time
 numpy
 Image
