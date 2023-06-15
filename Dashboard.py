@@ -339,6 +339,9 @@ def main():
         plt.bar(sorted_correlation.index, sorted_correlation.values)
         plt.xlabel('Provinsi')
         plt.ylabel('Correlation')
+        #also display the correlation value on top of the bar
+        for i, v in enumerate(sorted_correlation.values):
+            plt.text(i - 0.25, v + 0.01, str(round(v, 2)))
         plt.title('Correlation between IPM and Food Consumption Percentage by Province')
         plt.xticks(rotation=90)
         st.pyplot(plt)
