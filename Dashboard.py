@@ -144,58 +144,35 @@ def main():
         
 
 
-        col1, col2 = st.columns([3,2])
 
-        with col1:
-            st.subheader("Peta IPM dan Persentase Pengeluaran kepada Makanan Provinsi Indonesia")
-            # user select year between 2017-2022
-            year = st.slider('Year', 2017, 2022, 2022)
+        st.subheader("Peta IPM dan Persentase Pengeluaran kepada Makanan Provinsi Indonesia")
+        # user select year between 2017-2022
+        year = st.slider('Year', 2017, 2022, 2022)
 
-            year_str = str(year)
+        year_str = str(year)
 
-            # display map if user click drodown
-            if st.button('Show Food Consumption Map '):
-                st.plotly_chart(define_map_food(food_gdf, year_str))
-                #loading screen when loading map
-                with st.spinner('Loading Map...'):
-                    time.sleep(5)
-                    st.success('Map Loaded!')
-            
-            # Display map
-            st.plotly_chart(define_map(province_gdf,year_str))
-
+        # display map if user click drodown
+        if st.button('Show Food Consumption Map '):
+            st.plotly_chart(define_map_food(food_gdf, year_str))
             #loading screen when loading map
             with st.spinner('Loading Map...'):
                 time.sleep(5)
                 st.success('Map Loaded!')
-        with col2:
-            #new line
-            st.write(" ")
-            st.write('\n')
-            st.write(" ")
+        
+        # Display map
+        st.plotly_chart(define_map(province_gdf,year_str))
 
-            st.write(" ")
-            st.write('\n')
-            st.write(" ")
+        #loading screen when loading map
+        with st.spinner('Loading Map...'):
+            time.sleep(5)
+            st.success('Map Loaded!')
 
-            st.write(" ")
-            st.write('\n')
-            st.write(" ")
+        st.subheader("Insight")
 
-            st.write(" ")
-            st.write('\n')
-            st.write(" ")
+        st.write("Daerah Jawa, Kalimantan, dan Sulawesi memiliki IPM yang cukup tinggi. Hal ini menunjukkan bahwa daerah-daerah ini memiliki indikator kesejahteraan yang relatif lebih baik dibandingkan dengan daerah lainnya di Indonesia. Faktor-faktor seperti pendidikan, kesehatan, dan penghasilan masyarakat di daerah-daerah ini mungkin berkontribusi terhadap tingkat IPM yang tinggi.")
+        st.write("Sebaliknya, daerah Papua dan Nusa Tenggara terlihat memiliki IPM yang rendah. Hal ini mengindikasikan bahwa daerah-daerah ini masih memiliki tantangan dalam meningkatkan kesejahteraan masyarakatnya. Perlu dilakukan upaya lebih lanjut dalam hal pendidikan, kesehatan, dan pembangunan ekonomi untuk meningkatkan IPM di daerah tersebut.")
 
-            st.write(" ")
-            st.write('\n')
-            st.write(" ")
-
-            st.subheader("Insight")
-
-            st.write("Daerah Jawa, Kalimantan, dan Sulawesi memiliki IPM yang cukup tinggi. Hal ini menunjukkan bahwa daerah-daerah ini memiliki indikator kesejahteraan yang relatif lebih baik dibandingkan dengan daerah lainnya di Indonesia. Faktor-faktor seperti pendidikan, kesehatan, dan penghasilan masyarakat di daerah-daerah ini mungkin berkontribusi terhadap tingkat IPM yang tinggi.")
-            st.write("Sebaliknya, daerah Papua dan Nusa Tenggara terlihat memiliki IPM yang rendah. Hal ini mengindikasikan bahwa daerah-daerah ini masih memiliki tantangan dalam meningkatkan kesejahteraan masyarakatnya. Perlu dilakukan upaya lebih lanjut dalam hal pendidikan, kesehatan, dan pembangunan ekonomi untuk meningkatkan IPM di daerah tersebut.")
-
-            st.write("Persebaran persentase pengeluaran untuk makanan terlihat cukup merata di tiap pulau. Hal ini menunjukkan bahwa masyarakat di berbagai daerah memiliki pola konsumsi makanan yang relatif serupa. Meskipun terdapat perbedaan tingkat pengeluaran untuk pangan antara daerah-daerah, pola pengeluaran tersebut cenderung seragam di tiap pulau. ")
+        st.write("Persebaran persentase pengeluaran untuk makanan terlihat cukup merata di tiap pulau. Hal ini menunjukkan bahwa masyarakat di berbagai daerah memiliki pola konsumsi makanan yang relatif serupa. Meskipun terdapat perbedaan tingkat pengeluaran untuk pangan antara daerah-daerah, pola pengeluaran tersebut cenderung seragam di tiap pulau. ")
 
 
     with st.container():
@@ -331,6 +308,14 @@ def main():
 
     tab1, tab2 = st.tabs(["Visualisasi BarChart", "Tabel Data"])
 
+    province_corr = ["SUMATERA UTARA",
+                    "JAMBI",
+                    "GORONTALO",
+                    "SULAWESI BARAT",
+                    "MALUKU "]
+
+
+
     with tab1:
         #display bar plot and sort the correlation, where x is the index and y is the value
         plt.figure(figsize=(20, 5))
@@ -342,6 +327,11 @@ def main():
         #also display the correlation value on top of the bar
         for i, v in enumerate(sorted_correlation.values):
             plt.text(i - 0.25, v + 0.01, str(round(v, 2)))
+
+        #differentiate the bar color for province with >0.7 and <-0.7 correlation
+        for i in range(len(sorted_correlation)):
+            if sorted_correlation[i] > 0.7 or sorted_correlation[i] < -0.7:
+                plt.bar(sorted_correlation.index[i], sorted_correlation.values[i], color='red')
         plt.title('Correlation between IPM and Food Consumption Percentage by Province')
         plt.xticks(rotation=90)
         st.pyplot(plt)
